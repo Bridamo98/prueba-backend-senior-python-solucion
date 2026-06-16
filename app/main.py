@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 
 from app.database import Base, engine
+from app import models  # noqa: F401
 
 # Simple setup: create tables on startup. In production, use Alembic.
 Base.metadata.create_all(bind=engine)
