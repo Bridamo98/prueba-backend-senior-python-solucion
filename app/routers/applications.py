@@ -45,6 +45,19 @@ def get_application(
     return ApplicationResponse.model_validate(application)
 
 
+@router.post("/{application_id}/reevaluate", response_model=ApplicationResponse)
+def reevaluate_application(
+    application_id: int,
+    service: ApplicationService = Depends(get_application_service),
+) -> ApplicationResponse:
+    try:
+        application = service.reevaluate(application_id)
+    except ApplicationNotFoundError as exc:
+        raise HTTPException(status_code=404, detail="Application not found") from exc
+
+    return ApplicationResponse.model_validate(application)
+
+
 @router.get("", response_model=ApplicationListResponse)
 def list_applications(
     status: ApplicationStatus | None = None,

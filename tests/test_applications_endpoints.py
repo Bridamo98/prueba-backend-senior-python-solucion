@@ -86,6 +86,28 @@ def test_get_application_returns_404_when_not_found(client: TestClient):
     assert response.json() == {"detail": "Application not found"}
 
 
+def test_post_reevaluate_recalculates_existing_application(client: TestClient):
+    created = _create_application(client, _card_rejected_payload())
+
+    response = client.post(f"/applications/{created['id']}/reevaluate")
+    assert response.status_code == 200
+
+    reevaluated = response.json()
+    assert reevaluated["id"] == created["id"]
+    assert reevaluated["product"] == "CARD"
+    assert reevaluated["status"] == "REJECTED"
+    assert reevaluated["rejection_reasons"] == [
+        "EXTERNAL_SCORE_BELOW_550_AND_INCOME_BELOW_3000000"
+    ]
+
+
+def test_post_reevaluate_returns_404_when_not_found(client: TestClient):
+    response = client.post("/applications/9999/reevaluate")
+
+    assert response.status_code == 404
+    assert response.json() == {"detail": "Application not found"}
+
+
 def test_get_applications_lists_with_optional_filters(client: TestClient):
     twist_created = _create_application(client, _twist_approved_payload())
     phone_created = _create_application(client, _phone_rejected_payload())
