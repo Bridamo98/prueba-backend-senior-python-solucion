@@ -37,7 +37,7 @@ class ApplicationRepository:
     def get_by_id(self, application_id: int) -> Application | None:
         return self.db.get(Application, application_id)
 
-    def list(
+    def list_applications(
         self,
         *,
         status: ApplicationStatus | None = None,

@@ -47,7 +47,7 @@ class ApplicationService:
         status: ApplicationStatus | None = None,
         product: ProductType | None = None,
     ) -> list[Application]:
-        return self.repository.list(status=status, product=product)
+        return self.repository.list_applications(status=status, product=product)
 
     def reevaluate(self, application_id: int) -> Application:
         application = self.get_application_or_raise(application_id)
